@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LuxeLayer + FitMirror — AI Fashion App For Sale</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Outfit:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #080808;
+  --white: #fafaf7;
+  --cream: #f2ede3;
+  --gold: #c9a84c;
+  --gold-light: #e8cc7a;
+  --gold-dim: rgba(201,168,76,0.12);
+  --muted: #8a8070;
+  --border: #e0d8cc;
+  --dark: #141410;
+  --surface: #1e1e18;
+  --text-dim: #888;
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:var(--black);color:var(--white);overflow-x:hidden;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;background:rgba(8,8,8,0.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(201,168,76,0.15);}
+.nav-logo{font-family:'Playfair Display',serif;font-weight:900;font-size:18px;letter-spacing:-0.3px;display:flex;align-items:center;gap:10px;color:var(--white);}
+.nav-logo .sep{color:var(--gold);font-style:italic;margin:0 4px;}
+.nav-badge{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;background:var(--gold);color:var(--black);padding:3px 10px;font-weight:700;}
+.nav-right{display:flex;align-items:center;gap:20px;}
+.lang-toggle{display:flex;gap:2px;border:1px solid rgba(201,168,76,0.3);border-radius:3px;overflow:hidden;}
+.lang-btn{padding:5px 12px;font-size:10px;font-weight:700;letter-spacing:0.1em;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all 0.2s;font-family:'Space Mono',monospace;}
+.lang-btn.active{background:var(--gold);color:var(--black);}
+.nav-cta{background:var(--gold);color:var(--black);font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:10px 24px;text-decoration:none;transition:background 0.2s;}
+.nav-cta:hover{background:var(--gold-light);}
+
+/* HERO */
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;padding-top:64px;position:relative;overflow:hidden;}
+.hero-left{background:var(--black);padding:80px 60px;display:flex;flex-direction:column;justify-content:center;position:relative;}
+.hero-left::after{content:'';position:absolute;right:-40px;top:0;bottom:0;width:80px;background:var(--black);clip-path:polygon(0 0,0% 100%,100% 100%);z-index:2;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:28px;}
+.hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--gold);}
+.hero-h1{font-family:'Playfair Display',serif;font-weight:900;font-size:clamp(44px,5vw,76px);line-height:1.0;color:var(--white);margin-bottom:24px;letter-spacing:-1px;}
+.hero-h1 em{font-style:italic;color:var(--gold);}
+.hero-sub{font-size:16px;line-height:1.7;color:var(--text-dim);font-weight:300;max-width:420px;margin-bottom:36px;}
+.hero-price{display:inline-flex;flex-direction:column;gap:4px;border:1px solid rgba(201,168,76,0.35);padding:20px 36px;margin-bottom:32px;align-self:flex-start;}
+.price-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.price-value{font-family:'Playfair Display',serif;font-size:40px;font-weight:900;color:var(--gold);letter-spacing:-1px;line-height:1;}
+.price-note{font-size:11px;color:var(--muted);}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;}
+.btn-primary{padding:14px 32px;background:var(--gold);color:var(--black);border:none;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.2s;letter-spacing:0.5px;}
+.btn-primary:hover{background:var(--gold-light);transform:translateY(-1px);}
+.btn-ghost{padding:14px 32px;background:transparent;color:var(--text-dim);border:1px solid #333;font-family:'Outfit',sans-serif;font-size:13px;cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.2s;}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold);}
+.hero-metrics{display:flex;gap:36px;margin-top:48px;padding-top:36px;border-top:1px solid #222;}
+.metric-val{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--white);line-height:1;margin-bottom:4px;}
+.metric-val span{color:var(--gold);}
+.metric-lbl{font-size:11px;color:#555;font-family:'Space Mono',monospace;letter-spacing:0.5px;}
+
+/* HERO RIGHT — fashion collage */
+.hero-right{background:#111;position:relative;overflow:hidden;display:grid;grid-template-rows:1fr 1fr;grid-template-columns:1fr 1fr;}
+.fashion-cell{overflow:hidden;position:relative;}
+.fashion-cell img{width:100%;height:100%;object-fit:cover;filter:grayscale(20%) contrast(1.05);transition:transform 0.6s;}
+.fashion-cell:hover img{transform:scale(1.04);}
+.fashion-cell::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,168,76,0.08),transparent);}
+.fashion-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,8,8,0.6),transparent);display:flex;align-items:flex-end;padding:20px;}
+.fashion-tag{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);background:rgba(0,0,0,0.7);padding:4px 10px;}
+.hero-badge{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;text-align:center;background:rgba(8,8,8,0.85);border:1px solid rgba(201,168,76,0.5);padding:24px 32px;backdrop-filter:blur(8px);}
+.hero-badge-title{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--gold);letter-spacing:0.1em;margin-bottom:6px;}
+.hero-badge-score{font-family:'Playfair Display',serif;font-size:52px;font-weight:900;color:var(--white);line-height:1;}
+.hero-badge-sub{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px;font-family:'Space Mono',monospace;}
+
+/* FASHION STRIP */
+.fashion-strip{display:grid;grid-template-columns:repeat(5,1fr);height:280px;overflow:hidden;}
+.strip-cell{position:relative;overflow:hidden;}
+.strip-cell img{width:100%;height:100%;object-fit:cover;filter:grayscale(15%);transition:transform 0.5s,filter 0.5s;}
+.strip-cell:hover img{transform:scale(1.06);filter:grayscale(0%);}
+.strip-cell-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(8,8,8,0.7));display:flex;align-items:flex-end;padding:16px;opacity:0;transition:opacity 0.3s;}
+.strip-cell:hover .strip-cell-overlay{opacity:1;}
+.strip-cell-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--gold);}
+.strip-gold-bar{height:2px;background:linear-gradient(to right,transparent,var(--gold),transparent);}
+
+/* SECTION BASE */
+.section{padding:100px 80px;max-width:1200px;margin:0 auto;}
+.section-eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(32px,4vw,56px);font-weight:900;line-height:1.05;letter-spacing:-1px;margin-bottom:48px;}
+.section-title em{font-style:italic;color:var(--gold);}
+.divider{height:1px;background:linear-gradient(to right,transparent,rgba(201,168,76,0.25),transparent);}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.1);}
+.stat-item{background:var(--surface);padding:32px 24px;}
+.stat-num{font-family:'Playfair Display',serif;font-size:38px;font-weight:900;color:var(--gold);line-height:1;margin-bottom:8px;}
+.stat-lbl{font-size:12px;color:var(--text-dim);font-weight:300;line-height:1.4;}
+
+/* PRODUCTS */
+.products-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;}
+.product-card{background:var(--surface);padding:48px;position:relative;overflow:hidden;}
+.product-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,transparent,var(--gold),transparent);opacity:0.5;}
+.product-num{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--muted);margin-bottom:20px;}
+.product-name{font-family:'Playfair Display',serif;font-size:32px;font-weight:900;margin-bottom:12px;line-height:1.1;}
+.product-name em{font-style:italic;color:var(--gold);}
+.product-desc{font-size:15px;color:var(--text-dim);font-weight:300;line-height:1.7;margin-bottom:32px;}
+.product-tags{display:flex;flex-wrap:wrap;gap:8px;}
+.tag{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:5px 12px;border:1px solid rgba(201,168,76,0.25);color:var(--muted);}
+
+/* DEMO SECTION */
+.demo-section{background:#0d0d0a;padding:80px;}
+.demo-inner{max-width:1100px;margin:0 auto;}
+.demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:48px;align-items:start;}
+.upload-zone{border:1px dashed #333;aspect-ratio:4/3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;cursor:pointer;transition:border-color 0.2s;background:#111;position:relative;overflow:hidden;}
+.upload-zone:hover{border-color:var(--gold);}
+.upload-zone.has-img{border-style:solid;border-color:rgba(201,168,76,0.4);}
+.upload-zone img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.upload-zone .dz-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.2s;}
+.upload-zone:hover .dz-overlay{opacity:1;}
+.upload-zone .dz-overlay span{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--gold);}
+.upload-icon{font-size:32px;opacity:0.3;}
+.upload-label{font-size:13px;color:var(--text-dim);font-weight:300;}
+.upload-sub{font-size:11px;color:#444;font-family:'Space Mono',monospace;letter-spacing:1px;}
+.upload-zones{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.zone-label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.demo-input{width:100%;background:#111;border:1px solid #222;color:var(--white);padding:12px 16px;font-family:'Outfit',sans-serif;font-size:14px;margin-bottom:16px;transition:border-color 0.2s;}
+.demo-input:focus{outline:none;border-color:var(--gold);}
+.demo-input::placeholder{color:#444;}
+.analyze-btn{width:100%;padding:16px;background:var(--gold);color:var(--black);border:none;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:0.5px;transition:background 0.2s;}
+.analyze-btn:hover{background:var(--gold-light);}
+.analyze-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.demo-result{background:#111;border:1px solid #222;min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;gap:16px;}
+.demo-empty{text-align:center;}
+.demo-empty .big-icon{font-size:48px;opacity:0.2;margin-bottom:12px;}
+.demo-empty p{font-size:14px;color:#444;font-weight:300;}
+.loading-state{display:none;flex-direction:column;align-items:center;gap:12px;}
+.loading-state.show{display:flex;}
+.loading-ring{width:48px;height:48px;border:2px solid #222;border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.load-msg{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--gold);}
+.result-panel{display:none;width:100%;}
+.result-panel.show{display:block;}
+.score-ring-wrap{text-align:center;margin-bottom:20px;}
+.score-ring-wrap svg{width:100px;height:100px;}
+.score-circle-bg{fill:none;stroke:#222;stroke-width:8;}
+.score-circle-fill{fill:none;stroke:var(--gold);stroke-width:8;stroke-linecap:round;stroke-dasharray:226;stroke-dashoffset:226;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset 1.2s ease;}
+.score-num{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;fill:var(--white);}
+.result-verdict{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;text-align:center;margin-bottom:4px;}
+.result-sub{font-size:12px;color:var(--muted);text-align:center;margin-bottom:16px;font-family:'Space Mono',monospace;letter-spacing:1px;}
+.result-style{font-size:13px;color:var(--text-dim);line-height:1.6;text-align:center;margin-bottom:16px;font-weight:300;}
+.result-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:12px;}
+.result-tag{font-size:11px;padding:4px 12px;background:rgba(77,175,107,0.15);border:1px solid rgba(77,175,107,0.3);color:#4caf7d;}
+.result-tip{font-size:12px;color:var(--muted);text-align:center;padding:12px;border:1px solid #222;font-style:italic;}
+.r-card{opacity:0;transform:translateY(10px);transition:all 0.3s;}
+.r-card.show{opacity:1;transform:translateY(0);}
+
+/* CHECKLIST */
+.checklist{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:rgba(201,168,76,0.08);}
+.check-item{background:var(--surface);padding:28px 32px;display:flex;gap:16px;border-left:2px solid transparent;transition:border-color 0.2s;}
+.check-item:hover{border-left-color:var(--gold);}
+.check-mark{color:var(--gold);font-size:14px;flex-shrink:0;margin-top:2px;}
+.check-text strong{display:block;font-size:14px;font-weight:500;color:var(--white);margin-bottom:4px;}
+.check-text span{font-size:13px;color:var(--text-dim);font-weight:300;line-height:1.5;}
+
+/* PRICE SECTION */
+.price-section{background:#0d0d0a;padding:100px 80px;text-align:center;}
+.price-box{display:inline-flex;flex-direction:column;align-items:center;gap:8px;border:1px solid rgba(201,168,76,0.35);padding:48px 80px;margin:40px 0;}
+.price-box-label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.price-box-value{font-family:'Playfair Display',serif;font-size:72px;font-weight:900;color:var(--gold);line-height:1;letter-spacing:-2px;}
+.price-box-note{font-size:14px;color:var(--muted);}
+.price-includes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:900px;margin:40px auto 0;text-align:left;}
+.pi-item{display:flex;gap:12px;align-items:flex-start;padding:20px 24px;background:var(--surface);border:1px solid rgba(201,168,76,0.08);}
+.pi-mark{color:var(--gold);flex-shrink:0;margin-top:2px;}
+.pi-text{font-size:13px;color:var(--text-dim);font-weight:300;line-height:1.5;}
+.pi-text strong{display:block;color:var(--white);font-weight:500;margin-bottom:2px;}
+
+/* CONTACT */
+.contact-section{padding:100px 80px;display:grid;grid-template-columns:1fr 1fr;gap:80px;max-width:1200px;margin:0 auto;align-items:center;}
+.contact-email-link{font-family:'Playfair Display',serif;font-size:clamp(22px,3vw,36px);font-weight:700;color:var(--gold);text-decoration:none;display:block;margin:24px 0;transition:color 0.2s;}
+.contact-email-link:hover{color:var(--gold-light);}
+.contact-note{font-size:15px;color:var(--text-dim);font-weight:300;line-height:1.7;margin-bottom:32px;}
+.contact-visual{position:relative;aspect-ratio:4/5;overflow:hidden;}
+.contact-visual img{width:100%;height:100%;object-fit:cover;filter:grayscale(20%);}
+.contact-visual::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,168,76,0.1),transparent);}
+
+/* FOOTER */
+footer{border-top:1px solid rgba(201,168,76,0.1);padding:32px 80px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+.footer-logo{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--muted);letter-spacing:0.05em;}
+.footer-note{font-size:11px;color:#444;font-family:'Space Mono',monospace;letter-spacing:0.5px;}
+
+/* LANG */
+.hu{display:none;}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  nav{padding:0 20px;}
+  .nav-badge{display:none;}
+  .hero{grid-template-columns:1fr;}
+  .hero-right{height:300px;}
+  .hero-left::after{display:none;}
+  .section{padding:60px 24px;}
+  .stats-grid{grid-template-columns:repeat(3,1fr);}
+  .products-grid{grid-template-columns:1fr;}
+  .demo-section{padding:60px 24px;}
+  .demo-grid{grid-template-columns:1fr;}
+  .checklist{grid-template-columns:1fr;}
+  .price-section{padding:60px 24px;}
+  .price-includes{grid-template-columns:1fr;}
+  .contact-section{grid-template-columns:1fr;padding:60px 24px;}
+  .contact-visual{display:none;}
+  .fashion-strip{grid-template-columns:repeat(3,1fr);}
+  footer{padding:24px 20px;flex-direction:column;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    LuxeLayer <span class="sep">&</span> FitMirror
+    <span class="nav-badge en">For Sale</span>
+    <span class="nav-badge hu" style="display:none;">Eladó</span>
+  </div>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('hu')">HU</button>
+    </div>
+    <a href="mailto:zsikaievron@gmail.com" class="nav-cta en">Contact</a>
+    <a href="mailto:zsikaievron@gmail.com" class="nav-cta hu" style="display:none;">Kapcsolat</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow en">Live on App Store · AI Fashion · For Sale</div>
+    <div class="hero-eyebrow hu" style="display:none;">App Store-on él · AI Divat · Eladó</div>
+
+    <h1 class="hero-h1">
+      <span class="en">An AI fashion<br><em>empire,</em><br>ready to own.</span>
+      <span class="hu" style="display:none;">Egy AI divat<br><em>birodalom,</em><br>készen áll.</span>
+    </h1>
+
+    <p class="hero-sub en">Two products. One codebase. Zero months of development needed. LuxeLayer consumer app + FitMirror B2B API — both live, both documented, both ready to generate revenue from day one.</p>
+    <p class="hero-sub hu" style="display:none;">Két termék. Egy kódbázis. Nulla hónap fejlesztés szükséges. LuxeLayer fogyasztói app + FitMirror B2B API — mindkettő élőben, mindkettő dokumentálva, mindkettő kész az azonnali bevételre.</p>
+
+    <div class="hero-price">
+      <span class="price-label en">Starting price</span>
+      <span class="price-label hu" style="display:none;">Kezdőár</span>
+      <span class="price-value">$50,000</span>
+      <span class="price-note en">Negotiable · Serious inquiries only</span>
+      <span class="price-note hu" style="display:none;">Tárgyalható · Csak komoly érdeklődőknek</span>
+    </div>
+
+    <div class="hero-btns">
+      <a href="mailto:zsikaievron@gmail.com" class="btn-primary en">Get in touch</a>
+      <a href="mailto:zsikaievron@gmail.com" class="btn-primary hu" style="display:none;">Kapcsolatfelvétel</a>
+      <a href="#demo" class="btn-ghost en">Try live demo ↓</a>
+      <a href="#demo" class="btn-ghost hu" style="display:none;">Élő demo ↓</a>
+    </div>
+
+    <div class="hero-metrics">
+      <div>
+        <div class="metric-val">25<span>K+</span></div>
+        <div class="metric-lbl en">lines of code</div>
+        <div class="metric-lbl hu" style="display:none;">sor kód</div>
+      </div>
+      <div>
+        <div class="metric-val">GPT<span>-4o</span></div>
+        <div class="metric-lbl en">AI engine</div>
+        <div class="metric-lbl hu" style="display:none;">AI motor</div>
+      </div>
+      <div>
+        <div class="metric-val">2</div>
+        <div class="metric-lbl en">revenue streams</div>
+        <div class="metric-lbl hu" style="display:none;">bevételi forrás</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO RIGHT: Fashion collage -->
+  <div class="hero-right">
+    <div class="fashion-cell">
+      <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&q=80" alt="Fashion" onerror="this.style.display='none'">
+      <div class="fashion-overlay"><span class="fashion-tag">Style AI</span></div>
+    </div>
+    <div class="fashion-cell">
+      <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=600&q=80" alt="Fashion" onerror="this.style.display='none'">
+      <div class="fashion-overlay"><span class="fashion-tag">GPT-4o</span></div>
+    </div>
+    <div class="fashion-cell">
+      <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600&q=80" alt="Fashion" onerror="this.style.display='none'">
+      <div class="fashion-overlay"><span class="fashion-tag">LuxeLayer</span></div>
+    </div>
+    <div class="fashion-cell">
+      <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600&q=80" alt="Fashion" onerror="this.style.display='none'">
+      <div class="fashion-overlay"><span class="fashion-tag">FitMirror API</span></div>
+    </div>
+    <!-- Center badge -->
+    <div class="hero-badge">
+      <div class="hero-badge-title">Style Score</div>
+      <div class="hero-badge-score">87</div>
+      <div class="hero-badge-sub">GPT-4o Analysis</div>
+    </div>
+  </div>
+</div>
+
+<!-- FASHION STRIP -->
+<div class="fashion-strip">
+  <div class="strip-cell">
+    <img src="https://images.unsplash.com/photo-1550614000-4895a10e1bfd?w=400&q=80" alt="" onerror="this.parentElement.style.background='#1a1a1a'">
+    <div class="strip-cell-overlay"><span class="strip-cell-label">Outfit Analysis</span></div>
+  </div>
+  <div class="strip-cell">
+    <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&q=80" alt="" onerror="this.parentElement.style.background='#1a1a1a'">
+    <div class="strip-cell-overlay"><span class="strip-cell-label">Style Score</span></div>
+  </div>
+  <div class="strip-cell">
+    <img src="https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?w=400&q=80" alt="" onerror="this.parentElement.style.background='#1a1a1a'">
+    <div class="strip-cell-overlay"><span class="strip-cell-label">AI Palette</span></div>
+  </div>
+  <div class="strip-cell">
+    <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=400&q=80" alt="" onerror="this.parentElement.style.background='#1a1a1a'">
+    <div class="strip-cell-overlay"><span class="strip-cell-label">B2B API</span></div>
+  </div>
+  <div class="strip-cell">
+    <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=400&q=80" alt="" onerror="this.parentElement.style.background='#1a1a1a'">
+    <div class="strip-cell-overlay"><span class="strip-cell-label">Ready to sell</span></div>
+  </div>
+</div>
+<div class="strip-gold-bar"></div>
+
+<!-- STATS -->
+<div class="section" style="padding-bottom:0;">
+  <div class="section-eyebrow en">By the numbers</div>
+  <div class="section-eyebrow hu" style="display:none;">Számokban</div>
+  <div class="stats-grid">
+    <div class="stat-item">
+      <div class="stat-num">25K+</div>
+      <div class="stat-lbl en">lines of production code</div>
+      <div class="stat-lbl hu" style="display:none;">sor produkciós kód</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">29</div>
+      <div class="stat-lbl en">screens & components</div>
+      <div class="stat-lbl hu" style="display:none;">képernyő és komponens</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">7</div>
+      <div class="stat-lbl en">languages built in</div>
+      <div class="stat-lbl hu" style="display:none;">beépített nyelv</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">2</div>
+      <div class="stat-lbl en">revenue streams</div>
+      <div class="stat-lbl hu" style="display:none;">bevételi forrás</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">iOS+</div>
+      <div class="stat-lbl en">Android (React Native)</div>
+      <div class="stat-lbl hu" style="display:none;">Android (React Native)</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">IP</div>
+      <div class="stat-lbl en">registration in progress</div>
+      <div class="stat-lbl hu" style="display:none;">bejegyzés folyamatban</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider" style="margin:60px 0;"></div>
+
+<!-- PRODUCTS -->
+<div class="section">
+  <div class="section-eyebrow en">Two products, one acquisition</div>
+  <div class="section-eyebrow hu" style="display:none;">Két termék, egy akvizíció</div>
+  <h2 class="section-title">
+    <span class="en">What you're <em>buying.</em></span>
+    <span class="hu" style="display:none;">Mit <em>vásárolsz.</em></span>
+  </h2>
+  <div class="products-grid">
+    <div class="product-card">
+      <div class="product-num">01 · Consumer App</div>
+      <h3 class="product-name"><em>LuxeLayer</em></h3>
+      <p class="product-desc en">A premium AI-powered style analysis app, live on the App Store. Users upload outfit photos and receive GPT-4o powered style scores, color palettes, brand recommendations, and fashion tips. Gamified with XP, streaks, and achievements.</p>
+      <p class="product-desc hu" style="display:none;">Prémium AI stíluselemző app, élőben az App Store-on. A felhasználók outfit fotókat töltenek fel és GPT-4o alapú stílus pontszámot, palettát, márkaajánlásokat és tippeket kapnak. Gamification: XP, streak, achievement.</p>
+      <div class="product-tags">
+        <span class="tag">iOS + Android</span>
+        <span class="tag">GPT-4o Vision</span>
+        <span class="tag">7 Languages</span>
+        <span class="tag">Stripe-Ready</span>
+        <span class="tag">Referral System</span>
+        <span class="tag">Push Notifications</span>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-num">02 · B2B API</div>
+      <h3 class="product-name">Fit<em>Mirror</em></h3>
+      <p class="product-desc en">A standalone AI style analysis API for webshops, stylist platforms, and e-commerce retailers. Isolated auth, monthly quota management, OpenAPI 3.0 spec, live Redoc documentation. Second, independent revenue stream.</p>
+      <p class="product-desc hu" style="display:none;">Önálló AI stíluselemzés API webshopoknak, stylist platformoknak és e-commerce kiskereskedőknek. Izolált auth, havi kvóta, OpenAPI 3.0 spec, élő Redoc dokumentáció. Második, független bevételi forrás.</p>
+      <div class="product-tags">
+        <span class="tag">REST API</span>
+        <span class="tag">OpenAPI 3.0</span>
+        <span class="tag">Live Sandbox</span>
+        <span class="tag">Redoc Docs</span>
+        <span class="tag">Rate Limited</span>
+        <span class="tag">€299–€4,999/mo</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- LIVE DEMO -->
+<div class="demo-section" id="demo">
+  <div class="demo-inner">
+    <div class="section-eyebrow en">Try before you buy</div>
+    <div class="section-eyebrow hu" style="display:none;">Próbáld ki mielőtt megveszed</div>
+    <h2 class="section-title">
+      <span class="en">Live AI style analysis.<br><em>Right here.</em></span>
+      <span class="hu" style="display:none;">Élő AI stíluselemzés.<br><em>Közvetlenül itt.</em></span>
+    </h2>
+    <p style="font-size:15px;color:var(--text-dim);font-weight:300;max-width:540px;margin-top:-24px;margin-bottom:0;line-height:1.7;" class="en">Upload a photo and see exactly what your future customers will experience. This is the same GPT-4o engine that powers both LuxeLayer and FitMirror.</p>
+    <p style="font-size:15px;color:var(--text-dim);font-weight:300;max-width:540px;margin-top:-24px;margin-bottom:0;line-height:1.7;" class="hu" style="display:none;">Tölts fel egy fotót és lásd pontosan, mit tapasztalnak majd a vevőid. Ez ugyanaz a GPT-4o motor, ami a LuxeLayert és a FitMirror-t is hajtja.</p>
+
+    <div class="demo-grid">
+      <!-- LEFT: upload -->
+      <div>
+        <div class="upload-zones">
+          <div>
+            <div class="zone-label en">Your photo</div>
+            <div class="zone-label hu" style="display:none;">A te fotód</div>
+            <div class="upload-zone" id="dPersonZone" onclick="document.getElementById('dPersonUpload').click()">
+              <div class="upload-icon">👤</div>
+              <div class="upload-label en">Upload photo</div>
+              <div class="upload-label hu" style="display:none;">Fotó feltöltése</div>
+              <div class="upload-sub">JPG / PNG</div>
+              <div class="dz-overlay"><span>CHANGE</span></div>
+            </div>
+            <input type="file" id="dPersonUpload" accept="image/*" style="display:none;">
+          </div>
+          <div>
+            <div class="zone-label en">Outfit / Product (optional)</div>
+            <div class="zone-label hu" style="display:none;">Outfit / Termék (opcionális)</div>
+            <div class="upload-zone" id="dProductZone" onclick="document.getElementById('dProductUpload').click()">
+              <div class="upload-icon">👗</div>
+              <div class="upload-label en">Upload outfit</div>
+              <div class="upload-label hu" style="display:none;">Outfit feltöltése</div>
+              <div class="upload-sub">JPG / PNG</div>
+              <div class="dz-overlay"><span>CHANGE</span></div>
+            </div>
+            <input type="file" id="dProductUpload" accept="image/*" style="display:none;">
+          </div>
+        </div>
+        <br>
+        <input type="text" class="demo-input" id="dProductName" placeholder="Product name (optional, e.g. 'Black blazer')">
+        <button class="analyze-btn" id="dAnalyzeBtn" onclick="runDemo()">
+          <span class="en">Analyze style →</span>
+          <span class="hu" style="display:none;">Stílus elemzése →</span>
+        </button>
+      </div>
+
+      <!-- RIGHT: results -->
+      <div class="demo-result">
+        <div class="demo-empty" id="dEmpty">
+          <div class="big-icon">✦</div>
+          <p class="en">Upload a photo to see the AI analysis</p>
+          <p class="hu" style="display:none;">Tölts fel egy fotót az AI elemzéshez</p>
+        </div>
+        <div class="loading-state" id="dLoading">
+          <div class="loading-ring"></div>
+          <div class="load-msg" id="dLoadMsg">ANALYZING STYLE...</div>
+        </div>
+        <div class="result-panel" id="dResults">
+          <div class="r-card" id="dCard1">
+            <div class="score-ring-wrap">
+              <svg viewBox="0 0 80 80">
+                <circle class="score-circle-bg" cx="40" cy="40" r="36"/>
+                <circle class="score-circle-fill" id="dRingFill" cx="40" cy="40" r="36"/>
+                <text class="score-num" x="40" y="46" text-anchor="middle" id="dRingNum">0</text>
+              </svg>
+            </div>
+            <div class="result-verdict" id="dVerdict"></div>
+            <div class="result-sub" id="dSubtitle"></div>
+          </div>
+          <div class="r-card" id="dCard2">
+            <div class="result-style" id="dStyleText"></div>
+            <div class="result-tags" id="dPros"></div>
+          </div>
+          <div class="r-card" id="dCard3">
+            <div class="result-tip" id="dCon"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CHECKLIST -->
+<div class="section">
+  <div class="section-eyebrow en">What's included</div>
+  <div class="section-eyebrow hu" style="display:none;">Mi szerepel az eladásban</div>
+  <h2 class="section-title">
+    <span class="en">Everything you need<br>to <em>launch tomorrow.</em></span>
+    <span class="hu" style="display:none;">Minden, ami kell<br>hogy <em>holnap elindítsd.</em></span>
+  </h2>
+  <div class="checklist">
+    <div class="check-item">
+      <span class="check-mark">✓</span>
+      <div class="check-text">
+        <strong class="en">Full source code</strong>
+        <strong class="hu" style="display:none;">Teljes forráskód</strong>
+        <span class="en">React Native app + Node.js backend, GitHub repo transfer included</span>
+        <span class="hu" style="display:none;">React Native app + Node.js backend, GitHub repo átadással</span>
+      </div>
+    </div>
+    <div class="check-item">
+      <span class="check-mark">✓</span>
+      <div class="check-text">
+        <strong class="en">Live App Store listing</strong>
+        <strong class="hu" style="display:none;">Élő App Store listing</strong>
+        <span class="en">iOS app approved, published and live. Transferable to new owner.</span>
+        <span class="hu" style="display:none;">iOS app jóváhagyva, publikálva. Átruházható az új tulajdonosra.</span>
+      </div>
+    </div>
+    <div class="check-item">
+      <span class="check-mark">✓</span>
+      <div class="check-text">
+        <strong class="en">FitMirror B2B API + docs</strong>
+        <strong class="hu" style="display:none;">FitMirror B2B API + doksi</strong>
+        <span class="en">OpenAPI 3.0 spec, sandbox environment, Redoc documentation site</span>
+        <span class="hu" style="display:none;">OpenAPI 3.0 spec, sandbox környezet, Redoc dokumentáció</span>
+      </div>
+    </div>
+    <div class="check-item">
+      <span class="check-mark">✓</span>
+      <div class="check-text">
+        <strong class="en">Backend infrastructure</strong>
+        <strong class="hu" style="display:none;">Backend infrastruktúra</strong>
+        <span class="en">Render deployment, Neon PostgreSQL, all environment configs</span>
+        <span class="hu" style="display:none;">Render deployment, Neon PostgreSQL, összes env konfig</span>
+      </div>
+    </div>
+    <div class="check-item">
+      <span class="check-mark">✓</span>
+      <div class="check-text">
+        <strong class="en">Stripe-ready monetization</strong>
+        <strong class="hu" style="display:none;">Stripe-kész monetizáció</strong>
+        <span class="en">4-tier pricing model built in. Just connect your Stripe account.</span>
+        <span class="hu" style="display:none;">4 szintű ármodell beépítve. Csak kösd be a Stripe fiókodat.</span>
+      </div>
+    </div>
+    <div class="check-item">
+      <span class="check-mark">✓</span>
+      <div class="check-text">
+        <strong class="en">IP registration in progress</strong>
+        <strong class="hu" style="display:none;">Szellemi tulajdon bejegyzés folyamatban</strong>
+        <span class="en">Filed with the Hungarian Intellectual Property Office</span>
+        <span class="hu" style="display:none;">Benyújtva a Magyar Szellemi Tulajdon Nemzeti Hivatalánál</span>
+      </div>
+    </div>
+    <div class="check-item">
+      <span class="check-mark">✓</span>
+      <div class="check-text">
+        <strong class="en">Technical documentation</strong>
+        <strong class="hu" style="display:none;">Technikai dokumentáció</strong>
+        <span class="en">README, architecture diagrams, API reference, due diligence pack</span>
+        <span class="hu" style="display:none;">README, architektúra diagram, API referencia, due diligence csomag</span>
+      </div>
+    </div>
+    <div class="check-item">
+      <span class="check-mark">✓</span>
+      <div class="check-text">
+        <strong class="en">Referral + growth engine</strong>
+        <strong class="hu" style="display:none;">Referral + növekedési motor</strong>
+        <span class="en">Built-in invite loop with XP rewards and cohort retention analytics</span>
+        <span class="hu" style="display:none;">Beépített invite loop XP jutalmakkal és kohort retention analyticsszal</span>
+      </div>
+    </div>
+    <div class="check-item">
+      <span class="check-mark">✓</span>
+      <div class="check-text">
+        <strong class="en">Handover support</strong>
+        <strong class="hu" style="display:none;">Átadási támogatás</strong>
+        <span class="en">Personal walkthrough of codebase, architecture, and deployment setup</span>
+        <span class="hu" style="display:none;">Személyes walkthrough a kódbázisról, architektúráról és deploymentről</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- PRICE -->
+<div class="price-section">
+  <div class="section-eyebrow en" style="text-align:center;">Asking price</div>
+  <div class="section-eyebrow hu" style="display:none;text-align:center;">Irányár</div>
+  <h2 class="section-title" style="text-align:center;">
+    <span class="en">One price.<br><em>Two products.</em> Everything.</span>
+    <span class="hu" style="display:none;">Egy ár.<br><em>Két termék.</em> Minden.</span>
+  </h2>
+  <div class="price-box">
+    <span class="price-box-label en">Starting from</span>
+    <span class="price-box-label hu" style="display:none;">Kezdőár</span>
+    <span class="price-box-value">$50,000</span>
+    <span class="price-box-note en">Negotiable · Serious inquiries only</span>
+    <span class="price-box-note hu" style="display:none;">Tárgyalható · Csak komoly érdeklődőknek</span>
+  </div>
+  <div class="price-includes">
+    <div class="pi-item">
+      <span class="pi-mark">✓</span>
+      <div class="pi-text">
+        <strong class="en">LuxeLayer iOS App</strong>
+        <strong class="hu" style="display:none;">LuxeLayer iOS App</strong>
+        <span class="en">Live, approved, transferable App Store listing</span>
+        <span class="hu" style="display:none;">Élő, jóváhagyott, átruházható App Store listing</span>
+      </div>
+    </div>
+    <div class="pi-item">
+      <span class="pi-mark">✓</span>
+      <div class="pi-text">
+        <strong class="en">FitMirror B2B API</strong>
+        <strong class="hu" style="display:none;">FitMirror B2B API</strong>
+        <span class="en">Second revenue stream, €299–€4,999/month potential</span>
+        <span class="hu" style="display:none;">Második bevételi forrás, €299–€4,999/hó potenciál</span>
+      </div>
+    </div>
+    <div class="pi-item">
+      <span class="pi-mark">✓</span>
+      <div class="pi-text">
+        <strong class="en">Full source code + handover</strong>
+        <strong class="hu" style="display:none;">Teljes forráskód + átadás</strong>
+        <span class="en">All repos, docs, infrastructure, personal support</span>
+        <span class="hu" style="display:none;">Összes repo, dokumentáció, infrastruktúra, személyes támogatás</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<div class="contact-section">
+  <div>
+    <div class="section-eyebrow en">Ready to acquire</div>
+    <div class="section-eyebrow hu" style="display:none;">Készen áll az átvételre</div>
+    <h2 class="section-title">
+      <span class="en">Be the <em>first</em><br>on the market.</span>
+      <span class="hu" style="display:none;">Légy <em>első</em><br>a piacon.</span>
+    </h2>
+    <p class="contact-note en">One message is enough. We'll share the full due diligence package — architecture docs, codebase walkthrough, and App Store metrics — within 24 hours.</p>
+    <p class="contact-note hu" style="display:none;">Egy üzenet elég. 24 órán belül elküldjük a teljes due diligence csomagot — architektúra dokumentáció, kódbázis walkthrough és App Store metrikák.</p>
+    <a href="mailto:zsikaievron@gmail.com" class="contact-email-link">zsikaievron@gmail.com</a>
+    <a href="mailto:zsikaievron@gmail.com" class="btn-primary en">Send an inquiry</a>
+    <a href="mailto:zsikaievron@gmail.com" class="btn-primary hu" style="display:none;">Érdeklődés küldése</a>
+  </div>
+  <div class="contact-visual">
+    <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800&q=80" alt="Fashion" onerror="this.parentElement.style.background='#1a1a1a'">
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">LUXELAYER × FITMIRROR</div>
+  <div class="footer-note en">An Evatlabs product · AI-powered · iOS App Store · Full source code included · zsikaievron@gmail.com</div>
+  <div class="footer-note hu" style="display:none;">Evatlabs termék · AI-alapú · iOS App Store · Teljes forráskód · zsikaievron@gmail.com</div>
+</footer>
+
+<script>
+// LANG
+function setLang(lang){
+  document.querySelectorAll('.en').forEach(el=>el.style.display=lang==='en'?'':'none');
+  document.querySelectorAll('.hu').forEach(el=>el.style.display=lang==='hu'?'':'none');
+  document.querySelectorAll('.lang-btn').forEach((btn,i)=>{
+    btn.classList.toggle('active',(lang==='en'&&i===0)||(lang==='hu'&&i===1));
+  });
+}
+
+// UPLOADS
+let personB64=null,productB64=null;
+function setupUpload(inputId,zoneId,setter){
+  document.getElementById(inputId).addEventListener('change',function(e){
+    const file=e.target.files[0];if(!file)return;
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      const src=ev.target.result;
+      setter(src.split(',')[1]);
+      const zone=document.getElementById(zoneId);
+      zone.classList.add('has-img');
+      zone.innerHTML=`<img src="${src}" alt=""><div class="dz-overlay"><span>CHANGE</span></div>`;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+setupUpload('dPersonUpload','dPersonZone',v=>personB64=v);
+setupUpload('dProductUpload','dProductZone',v=>productB64=v);
+
+// DEMO
+async function runDemo(){
+  const productName=document.getElementById('dProductName').value.trim();
+  if(!personB64){alert('Please upload your photo first.');return;}
+  const btn=document.getElementById('dAnalyzeBtn');
+  btn.disabled=true;
+  document.getElementById('dEmpty').style.display='none';
+  document.getElementById('dResults').classList.remove('show');
+  ['dCard1','dCard2','dCard3'].forEach(id=>document.getElementById(id).classList.remove('show'));
+  const loading=document.getElementById('dLoading');
+  loading.classList.add('show');
+  const msgs=['READING STYLE PROFILE...','ANALYZING COLOR PALETTE...','MATCHING PRODUCT...','CALCULATING SCORE...'];
+  let mi=0;
+  const t=setInterval(()=>{document.getElementById('dLoadMsg').textContent=msgs[++mi%msgs.length];},1100);
+  try{
+    const contentArr=[{type:"image",source:{type:"base64",media_type:"image/jpeg",data:personB64}}];
+    if(productB64)contentArr.push({type:"image",source:{type:"base64",media_type:"image/jpeg",data:productB64}});
+    const productDesc=productName?`The product: "${productName}".`:'Analyze general style.';
+    if(productB64)contentArr.push({type:"text",text:"The second image is the outfit/product."});
+    contentArr.push({type:"text",text:`You are FitMirror, an expert AI fashion stylist. Analyze the person's style and how well the product matches them.\n\n${productDesc}\n\nRespond ONLY with valid JSON, no markdown:\n{\n  "match_score": <0-100>,\n  "verdict": "<short verdict, max 5 words>",\n  "style_analysis": "<2 sentences about person's style>",\n  "pros": ["<pro1>","<pro2>","<pro3>"],\n  "tip": "<1 styling tip>"\n}`});
+    const res=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:1000,messages:[{role:"user",content:contentArr}]})
+    });
+    clearInterval(t);
+    const data=await res.json();
+    if(data.error)throw new Error(data.error.message);
+    const r=JSON.parse(data.content[0].text.replace(/```json|```/g,'').trim());
+    showResults(r);
+  }catch(err){
+    clearInterval(t);
+    document.getElementById('dEmpty').style.display='flex';
+    document.getElementById('dEmpty').innerHTML=`<div class="big-icon">⚠️</div><div style="color:#555">Error: ${err.message}</div>`;
+  }finally{
+    loading.classList.remove('show');
+    btn.disabled=false;
+  }
+}
+
+function showResults(r){
+  const score=Math.min(100,Math.max(0,r.match_score||0));
+  const fill=document.getElementById('dRingFill');
+  const numEl=document.getElementById('dRingNum');
+  fill.style.stroke=score>=75?'#4caf7d':score>=50?'#c9a84c':'#e05a4e';
+  const circ=226;
+  setTimeout(()=>{
+    fill.style.strokeDashoffset=circ-(score/100)*circ;
+    let c=0;const inc=setInterval(()=>{c=Math.min(score,c+2);numEl.textContent=c;if(c>=score)clearInterval(inc);},18);
+  },100);
+  document.getElementById('dVerdict').textContent=r.verdict||'Style Score';
+  document.getElementById('dSubtitle').textContent=score>=75?'Great match for your style':score>=50?'Could work with right styling':'May not be your best match';
+  document.getElementById('dStyleText').textContent=r.style_analysis||'';
+  const prosEl=document.getElementById('dPros');
+  prosEl.innerHTML='';
+  (r.pros||[]).forEach(p=>{const t=document.createElement('span');t.className='result-tag';t.textContent=p;prosEl.appendChild(t);});
+  document.getElementById('dCon').textContent=r.tip||'';
+  document.getElementById('dResults').classList.add('show');
+  ['dCard1','dCard2','dCard3'].forEach((id,i)=>{setTimeout(()=>document.getElementById(id).classList.add('show'),150+i*120);});
+}
+</script>
+</body>
+</html>
